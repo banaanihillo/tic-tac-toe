@@ -18,7 +18,10 @@
   </main>
   <p v-if="gameOver">
     The game is over. <br />
-    {{winner ? `${winner} won!` : "It's a tie!"}}
+    {{winner ? `${winner} won!` : "It's a tie!"}} <br />
+    <button @click="reset()" class="reset">
+      Play again
+    </button>
   </p>
 </div>
 </template>
@@ -31,13 +34,7 @@ export default {
     return {
       player: null,
       opposingPlayer: null,
-      tiles: [...Array(9)].map((_value, index) => {
-        return {
-          id: index,
-          disabled: false,
-          value: ""
-        }
-      }),
+      tiles: this.populateTiles(),
       gameOver: false,
       winner: null
     }
@@ -154,6 +151,20 @@ export default {
       } else {
         return false
       }
+    },
+    reset() {
+      this.gameOver = false
+      this.winner = null
+      this.tiles = this.populateTiles()
+    },
+    populateTiles() {
+      return [...Array(9)].map((_value, index) => {
+        return {
+          id: index,
+          disabled: false,
+          value: ""
+        }
+      })
     }
   }
 }
@@ -182,6 +193,12 @@ button:hover {
 button[disabled] {
   background-color: magenta;
   color: black;
+}
+
+button.reset {
+  height: 2em;
+  width: 6em;
+  margin-top: 0.5em;
 }
 
 .tic-tac-toe {
