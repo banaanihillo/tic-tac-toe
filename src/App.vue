@@ -8,13 +8,17 @@
 
   <main v-else class="tic-tac-toe">
     <span v-for="tile in tiles" :key="tile.id">
-      <button @click="fillTile(tile.id)" :disabled="tile.disabled">
+      <button
+        @click="fillTile(tile.id)"
+        :disabled="tile.disabled || gameOver"
+      >
         {{tile.value}}
       </button>
     </span>
   </main>
   <p v-if="gameOver">
-    The game is over
+    The game is over. <br />
+    {{winner ? `${winner} won!` : "It's a tie!"}}
   </p>
 </div>
 </template>
@@ -34,7 +38,8 @@ export default {
           value: ""
         }
       }),
-      gameOver: false
+      gameOver: false,
+      winner: null
     }
   },
   methods: {
@@ -56,6 +61,19 @@ export default {
       const randomTile = remainingTiles[randomTileIndex]
       this.tiles[randomTile].value = this.opposingPlayer
       this.tiles[randomTile].disabled = true
+
+      if (remainingTiles.length < 5) {
+        if (this.isWinner(this.player)) {
+          this.gameOver = true
+          this.winner = this.player
+          return
+        }
+        if (this.isWinner(this.opposingPlayer)) {
+          this.gameOver = true
+          this.winner = this.opposingPlayer
+          return
+        }
+      }
     },
     selectPlayer(player) {
       this.player = player
@@ -64,6 +82,78 @@ export default {
           ? "O"
           : "X"
       )
+    },
+    isWinner(player) {
+      for (let index = 0; index < this.tiles.length; index++) {
+        if (
+          this.checkRows(player)
+          || this.checkColumn(player)
+          || this.checkTopRight(player)
+          || this.checkBottomRight(player)
+        ) {
+          return true
+        }
+      }
+    },
+    checkRows(player) {
+      const rowOne = this.checkWinner(this.tiles.slice(0, 3), player)
+      const rowTwo = this.checkWinner(this.tiles.slice(3, 6), player)
+      const rowThree = this.checkWinner(this.tiles.slice(6, 9), player)
+      if (rowOne || rowTwo || rowThree) {
+        return true
+      } else {
+        return false
+      }
+    },
+    checkColumn(player) {
+      const columnOne = this.checkWinner(
+        [this.tiles[0], this.tiles[3], this.tiles[6]],
+        player
+      )
+      const columnTwo = this.checkWinner(
+        [this.tiles[1], this.tiles[4], this.tiles[7]],
+        player
+      )
+      const columnThree = this.checkWinner(
+        [this.tiles[2], this.tiles[5], this.tiles[8]],
+        player
+      )
+      if (columnOne || columnTwo || columnThree) {
+        return true
+      } else {
+        return false
+      }
+    },
+    checkTopRight(player) {
+      const diagonallyTopToRight = this.checkWinner(
+        [this.tiles[0], this.tiles[4], this.tiles[8]],
+        player
+      )
+        
+      if (diagonallyTopToRight) {
+        return true
+      } else {
+        return false
+      }
+    },
+    checkBottomRight(player) {
+      const diagonallyBottomToRight = this.checkWinner(
+        [this.tiles[2], this.tiles[4], this.tiles[6]],
+        player
+      )
+        
+      if (diagonallyBottomToRight) {
+        return true
+      } else {
+        return false
+      }
+    },
+    checkWinner(tiles, player) {
+      if (tiles.every(tile => tile.value === player)) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
