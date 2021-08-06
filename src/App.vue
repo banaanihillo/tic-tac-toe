@@ -13,6 +13,9 @@
       </button>
     </span>
   </main>
+  <p v-if="gameOver">
+    The game is over
+  </p>
 </div>
 </template>
 
@@ -23,22 +26,44 @@ export default {
   data() {
     return {
       player: null,
+      opposingPlayer: null,
       tiles: [...Array(9)].map((_value, index) => {
         return {
           id: index,
           disabled: false,
           value: ""
         }
-      })
+      }),
+      gameOver: false
     }
   },
   methods: {
     fillTile(tileID) {
       this.tiles[tileID].value = this.player
       this.tiles[tileID].disabled = true
+
+      const remainingTiles = this.tiles.filter((tile) => {
+        return tile.value === ""
+      }).map((tile) => tile.id)
+
+      if (remainingTiles.length === 0) {
+        return this.gameOver = true
+      }
+
+      const randomTileIndex = Math.floor(
+        Math.random() * remainingTiles.length
+      )
+      const randomTile = remainingTiles[randomTileIndex]
+      this.tiles[randomTile].value = this.opposingPlayer
+      this.tiles[randomTile].disabled = true
     },
     selectPlayer(player) {
       this.player = player
+      this.opposingPlayer = (
+        player === "X"
+          ? "O"
+          : "X"
+      )
     }
   }
 }
