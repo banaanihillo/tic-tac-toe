@@ -1,20 +1,28 @@
 <template>
-  <div id="app">
+<div id="app">
+  <main v-if="!player">
+    <h2> Select your player </h2>
+    <button @click="selectPlayer('X')">X</button>
+    <button @click="selectPlayer('O')">O</button>
+  </main>
+
+  <main v-else class="tic-tac-toe">
     <span v-for="tile in tiles" :key="tile.id">
       <button @click="fillTile(tile.id)" :disabled="tile.disabled">
-        {{tiles[tile.id].value}}
+        {{tile.value}}
       </button>
     </span>
-  </div>
+  </main>
+</div>
 </template>
 
-<script> //
+<script>
 
 export default {
   name: 'App',
   data() {
     return {
-      player: "X",
+      player: null,
       tiles: [...Array(9)].map((_value, index) => {
         return {
           id: index,
@@ -25,9 +33,12 @@ export default {
     }
   },
   methods: {
-    fillTile(tile) {
-      this.tiles[tile].value = this.player
-      this.tiles[tile].disabled = true
+    fillTile(tileID) {
+      this.tiles[tileID].value = this.player
+      this.tiles[tileID].disabled = true
+    },
+    selectPlayer(player) {
+      this.player = player
     }
   }
 }
@@ -58,7 +69,7 @@ button[disabled] {
   color: black;
 }
 
-#app {
+.tic-tac-toe {
   width: min-content;
   margin: 0 auto;
   display: grid;
