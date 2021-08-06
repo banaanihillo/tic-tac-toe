@@ -1,10 +1,6 @@
 <template>
   <div id="app">
-    <span
-      v-for="tile in tiles"
-      :key="tile.id"
-      :class="[tile.value === 'X' ? selectedClass : '']"
-    >
+    <span v-for="tile in tiles" :key="tile.id">
       <button @click="fillTile(tile.id)" :disabled="tile.disabled">
         {{tiles[tile.id].value}}
       </button>
@@ -25,12 +21,11 @@ export default {
           disabled: false,
           value: ""
         }
-      }),
-      selectedClass: "selected"
+      })
     }
   },
   methods: {
-    fillTile(tile) { //
+    fillTile(tile) {
       this.tiles[tile].value = this.player
       this.tiles[tile].disabled = true
     }
