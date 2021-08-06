@@ -5,7 +5,7 @@
       :key="tile.id"
       :class="[tile.value === 'X' ? selectedClass : '']"
     >
-      <button @click="fillTile(tile.id)">
+      <button @click="fillTile(tile.id)" :disabled="tile.disabled">
         {{tiles[tile.id].value}}
       </button>
     </span>
@@ -30,11 +30,9 @@ export default {
     }
   },
   methods: {
-    fillTile(tile) {
-      console.log(tile)
+    fillTile(tile) { //
       this.tiles[tile].value = this.player
-      console.log(this.tiles)
-      console.log(this.tiles[tile])
+      this.tiles[tile].disabled = true
     }
   }
 }
@@ -55,8 +53,14 @@ button {
   height: 5em;
 }
 
-.selected button {
+button:focus,
+button:hover {
   background-color: violet;
+}
+
+button[disabled] {
+  background-color: magenta;
+  color: black;
 }
 
 #app {
